@@ -1,65 +1,236 @@
+# Files
+
+Below are the three final files you asked for: **HTML**, **CSS**, and **JS**. Save them side-by-side in the same folder as:
+
+* `index.html`
+* `style.css`
+* `app.js`
+
+> **Note:** For production, set a proxy route in `app.js` (see `PROXY_BASE`) to avoid CORS and keep your API key server-side.
+
+---
+
+## `index.html`
+
+```html
 <!doctype html>
-<div>
-<label for="rawSize">Raw tire size (e.g., 2055516)</label>
-<input id="rawSize" placeholder="2055516" inputmode="numeric" />
-</div>
-</div>
-<div class="grid cols-2">
-<div>
-<label for="tw">Width</label>
-<input id="tw" value="225" inputmode="numeric" />
-</div>
-<div>
-<label for="ar">Aspect Ratio</label>
-<input id="ar" value="50" inputmode="numeric" />
-</div>
-<div>
-<label for="rim">Rim (in)</label>
-<input id="rim" value="17" inputmode="numeric" />
-</div>
-<div>
-<label for="minq">Min Qty</label>
-<input id="minq" value="1" inputmode="numeric" />
-</div>
-</div>
-<button id="tireSearchBtn" class="btn primary full mt-8">Search</button>
-<div id="tireLoading" class="row tiny" style="display:none"><div class="spinner"></div><span>Searching...</span></div>
-<div id="tireError" class="error"></div>
-<div id="tireResults"></div>
-</section>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Tire Base • Mobile Wrapper</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="wrap">
+        <h1>🚗 Tire Base — Mobile</h1>
+        <button id="signout" class="btn ghost tiny">Sign out</button>
+      </div>
+    </header>
 
-<!-- Order Tab -->
-<section class="card" id="tab-order" hidden>
-<h3>Create Order (Minimal)</h3>
-<div class="grid cols-2">
-<div>
-<label for="storeId">Store ID</label>
-<input id="storeId" value="1" inputmode="numeric" />
-</div>
-<div>
-<label for="statusId">Order Status ID</label>
-<input id="statusId" value="1" inputmode="numeric" />
-</div>
-<div>
-<label for="prodId">Product ID</label>
-<input id="prodId" inputmode="numeric" />
-</div>
-<div>
-<label for="qty">Quantity</label>
-<input id="qty" value="1" inputmode="numeric" />
-</div>
-</div>
-<label for="price" class="mt-8 block">Unit Price</label>
-<input id="price" value="0" inputmode="decimal" />
-<button id="createOrderBtn" class="btn primary full mt-8">Create Order</button>
-<div id="orderError" class="error"></div>
-<div id="orderMsg" class="ok"></div>
-</section>
-</main>
+    <main id="root">
+      <!-- Auth Card -->
+      <section class="card" id="authCard" hidden>
+        <h2>Connect to Tire Base</h2>
+        <p class="tiny hint">Paste your API key (Settings → API → <b>New API Key</b>). Stored locally on this device.</p>
+        <label for="apiKey">API Key</label>
+        <div class="row">
+          <input id="apiKey" type="password" placeholder="tb_xxx..." autocomplete="off"/>
+          <button id="connectBtn" class="btn primary">Connect</button>
+        </div>
+      </section>
 
-<footer>Demo wrapper • Optimized for phones • Uses Tire Base External API</footer>
-</div>
+      <!-- Context -->
+      <section class="card" id="contextCard" hidden>
+        <h3>Quick Context</h3>
+        <div class="grid cols-2">
+          <div>
+            <label for="ctxCustomerId">Selected Customer ID</label>
+            <input id="ctxCustomerId" placeholder="e.g. 17785" inputmode="numeric" />
+          </div>
+          <div class="align-end"><button id="useCtxBtn" class="btn full">Use</button></div>
+        </div>
+        <div class="hint">Tip: Look up or create a customer, then paste their ID here for tire search & order.</div>
+      </section>
 
-<script src="app.js"></script>
+      <!-- Tabs -->
+      <div class="tabs" id="tabs" hidden>
+        <button class="tab-btn active" data-tab="customers">Customers</button>
+        <button class="tab-btn" data-tab="create">Create Customer</button>
+        <button class="tab-btn" data-tab="tires">Tires</button>
+        <button class="tab-btn" data-tab="order">Order</button>
+      </div>
+
+      <!-- Diagnostics -->
+      <section class="card" id="diagnostics" hidden>
+        <div class="row"><div class="tiny"><b>Diagnostics</b></div><div class="row gap-6"><button id="pingBtn" class="btn">Run API test</button><button id="runTestsBtn" class="btn">Run UI tests</button></div></div>
+        <div class="tiny hint">Checks API key, network/CORS, and basic UI helpers.</div>
+        <pre id="diagOut" class="tiny mono"></pre>
+      </section>
+
+      <!-- Customers Tab -->
+      <section class="card" id="tab-customers" hidden>
+        <h3>Find Customer by ID</h3>
+        <div class="grid cols-2">
+          <div>
+            <label for="custId">Customer ID</label>
+            <input id="custId" placeholder="e.g. 17785" inputmode="numeric" />
+          </div>
+          <div class="align-end"><button id="findCustBtn" class="btn full">Find</button></div>
+        </div>
+        <div id="custLoading" class="row tiny" style="display:none"><div class="spinner"></div><span>Fetching customer...</span></div>
+        <div id="custError" class="error"></div>
+        <div id="custResult" class="tiny"></div>
+      </section>
+
+      <!-- Create Customer Tab -->
+      <section class="card" id="tab-create" hidden>
+        <h3>Create New Customer</h3>
+        <div class="grid cols-2">
+          <div>
+            <label for="firstName">First Name *</label>
+            <input id="firstName" />
+          </div>
+          <div>
+            <label for="lastName">Last Name *</label>
+            <input id="lastName" />
+          </div>
+          <div>
+            <label for="businessName">Business Name *</label>
+            <input id="businessName" />
+          </div>
+          <div>
+            <label for="email">Email *</label>
+            <input id="email" type="email" />
+          </div>
+          <div>
+            <label for="phone">Phone *</label>
+            <input id="phone" />
+          </div>
+          <div>
+            <label for="city">City *</label>
+            <input id="city" />
+          </div>
+          <div>
+            <label for="billing1">Billing Address 1 *</label>
+            <input id="billing1" />
+          </div>
+          <div>
+            <label for="billing2">Billing Address 2</label>
+            <input id="billing2" />
+          </div>
+          <div>
+            <label for="zip">ZIP Code *</label>
+            <input id="zip" />
+          </div>
+          <div>
+            <label for="stateId">State ID *</label>
+            <input id="stateId" inputmode="numeric" value="1" />
+          </div>
+          <div>
+            <label for="customerTypeId">Customer Type ID *</label>
+            <input id="customerTypeId" inputmode="numeric" value="1" />
+          </div>
+          <div>
+            <label for="taxRateId">Tax Rate ID</label>
+            <input id="taxRateId" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="priceLevelId">Price Level ID</label>
+            <input id="priceLevelId" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="notes">Notes</label>
+            <input id="notes" />
+          </div>
+        </div>
+        <div class="grid cols-3 mt-8">
+          <div>
+            <label for="storeIdCreate">Store ID *</label>
+            <input id="storeIdCreate" inputmode="numeric" value="1" />
+          </div>
+          <div>
+            <label for="defaultStoreId">Default Store ID *</label>
+            <input id="defaultStoreId" inputmode="numeric" value="1" />
+          </div>
+          <div>
+            <label for="sellerEmployeeId">Seller Employee ID</label>
+            <input id="sellerEmployeeId" inputmode="numeric" />
+          </div>
+        </div>
+        <button id="createCustomerBtn" class="btn primary full mt-8">Create Customer</button>
+        <div class="hint mt-6">Fields marked * are required by the API.</div>
+        <div id="createCustError" class="error"></div>
+        <div id="createCustMsg" class="ok"></div>
+      </section>
+
+      <!-- Tires Tab -->
+      <section class="card" id="tab-tires" hidden>
+        <h3>Search Tires</h3>
+        <div class="grid mb-8">
+          <div>
+            <label for="rawSize">Raw tire size (e.g., 2055516)</label>
+            <input id="rawSize" placeholder="2055516" inputmode="numeric" />
+          </div>
+        </div>
+        <div class="grid cols-2">
+          <div>
+            <label for="tw">Width</label>
+            <input id="tw" value="225" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="ar">Aspect Ratio</label>
+            <input id="ar" value="50" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="rim">Rim (in)</label>
+            <input id="rim" value="17" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="minq">Min Qty</label>
+            <input id="minq" value="1" inputmode="numeric" />
+          </div>
+        </div>
+        <button id="tireSearchBtn" class="btn primary full mt-8">Search</button>
+        <div id="tireLoading" class="row tiny" style="display:none"><div class="spinner"></div><span>Searching...</span></div>
+        <div id="tireError" class="error"></div>
+        <div id="tireResults"></div>
+      </section>
+
+      <!-- Order Tab -->
+      <section class="card" id="tab-order" hidden>
+        <h3>Create Order (Minimal)</h3>
+        <div class="grid cols-2">
+          <div>
+            <label for="storeId">Store ID</label>
+            <input id="storeId" value="1" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="statusId">Order Status ID</label>
+            <input id="statusId" value="1" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="prodId">Product ID</label>
+            <input id="prodId" inputmode="numeric" />
+          </div>
+          <div>
+            <label for="qty">Quantity</label>
+            <input id="qty" value="1" inputmode="numeric" />
+          </div>
+        </div>
+        <label for="price" class="mt-8 block">Unit Price</label>
+        <input id="price" value="0" inputmode="decimal" />
+        <button id="createOrderBtn" class="btn primary full mt-8">Create Order</button>
+        <div id="orderError" class="error"></div>
+        <div id="orderMsg" class="ok"></div>
+      </section>
+    </main>
+
+    <footer>Demo wrapper • Optimized for phones • Uses Tire Base External API</footer>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
