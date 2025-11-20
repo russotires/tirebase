@@ -1,0 +1,65 @@
+<!doctype html>
+<div>
+<label for="rawSize">Raw tire size (e.g., 2055516)</label>
+<input id="rawSize" placeholder="2055516" inputmode="numeric" />
+</div>
+</div>
+<div class="grid cols-2">
+<div>
+<label for="tw">Width</label>
+<input id="tw" value="225" inputmode="numeric" />
+</div>
+<div>
+<label for="ar">Aspect Ratio</label>
+<input id="ar" value="50" inputmode="numeric" />
+</div>
+<div>
+<label for="rim">Rim (in)</label>
+<input id="rim" value="17" inputmode="numeric" />
+</div>
+<div>
+<label for="minq">Min Qty</label>
+<input id="minq" value="1" inputmode="numeric" />
+</div>
+</div>
+<button id="tireSearchBtn" class="btn primary full mt-8">Search</button>
+<div id="tireLoading" class="row tiny" style="display:none"><div class="spinner"></div><span>Searching...</span></div>
+<div id="tireError" class="error"></div>
+<div id="tireResults"></div>
+</section>
+
+<!-- Order Tab -->
+<section class="card" id="tab-order" hidden>
+<h3>Create Order (Minimal)</h3>
+<div class="grid cols-2">
+<div>
+<label for="storeId">Store ID</label>
+<input id="storeId" value="1" inputmode="numeric" />
+</div>
+<div>
+<label for="statusId">Order Status ID</label>
+<input id="statusId" value="1" inputmode="numeric" />
+</div>
+<div>
+<label for="prodId">Product ID</label>
+<input id="prodId" inputmode="numeric" />
+</div>
+<div>
+<label for="qty">Quantity</label>
+<input id="qty" value="1" inputmode="numeric" />
+</div>
+</div>
+<label for="price" class="mt-8 block">Unit Price</label>
+<input id="price" value="0" inputmode="decimal" />
+<button id="createOrderBtn" class="btn primary full mt-8">Create Order</button>
+<div id="orderError" class="error"></div>
+<div id="orderMsg" class="ok"></div>
+</section>
+</main>
+
+<footer>Demo wrapper • Optimized for phones • Uses Tire Base External API</footer>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
