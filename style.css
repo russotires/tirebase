@@ -1,0 +1,54 @@
+:root{
+/* Dark theme + red accent */
+--bg:#0b0f13;--fg:#e5e7eb;--muted:#9ca3af;--accent:#ef4444;--danger:#f87171;--ok:#22c55e;--card:#121820;--border:#1f2937;
+--radius:16px; --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+html,body{margin:0;height:100%;font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background:var(--bg);color:var(--fg);}
+.app{max-width:430px;margin:0 auto;}
+header{position:sticky;top:0;backdrop-filter:saturate(160%) blur(8px);background:rgba(11,15,19,.6);border-bottom:1px solid var(--border);z-index:10}
+header .wrap{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:430px;margin:0 auto}
+h1{font-size:16px;margin:0;display:flex;align-items:center;gap:8px}
+
+/* Cards & layout */
+main{padding:16px}
+.card{background:linear-gradient(180deg,rgba(26,35,49,.9), rgba(18,24,32,.95));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.grid{display:grid;gap:12px}
+.cols-2{grid-template-columns:1fr 1fr}
+.cols-3{grid-template-columns:1fr 1fr 1fr}
+.mt-6{margin-top:6px}
+.mt-8{margin-top:8px}
+.mb-8{margin-bottom:8px}
+.align-end{display:flex;align-items:flex-end}
+.full{width:100%}
+.block{display:block}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+.gap-6{gap:6px}
+
+/* Inputs & labels */
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+input,select{width:100%;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0f1622;color:var(--fg);font-size:16px}
+input::placeholder{color:#64748b}
+
+/* Buttons */
+.btn{appearance:none;border:1px solid var(--border);background:#1a2331;padding:12px 14px;border-radius:14px;cursor:pointer;font-weight:700;transition:.15s ease;color:var(--fg)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.ghost{background:transparent}
+.btn:active{transform:scale(.98)}
+
+/* Tabs */
+.tabs{position:sticky;top:58px;z-index:9;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;background:transparent;padding-top:8px;margin-bottom:12px}
+.tab-btn{padding:10px;border-radius:12px;border:1px solid var(--border);background:#0f1622;font-weight:700;transition:.15s ease;color:var(--fg)}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.tab-btn:active{transform:scale(.98)}
+
+/* Helpers */
+.hint{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;background:#3f1a1a;border:1px solid #7f1d1d;color:#fecaca;border-radius:999px;padding:4px 8px;font-size:11px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tiny{font-size:12px}
+.error{color:var(--danger);font-size:13px;white-space:pre-wrap}
+.ok{color:var(--ok);font-size:13px}
+.spinner{width:16px;height:16px;border-radius:50%;border:2px solid #334155;border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{padding:24px 16px;text-align:center;color:var(--muted);font-size:12px}
